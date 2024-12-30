@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gerenciar Registros</title>
+</head>
+<body>
+    <h2>Adicionar Novo Registro</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Salvar</button>
+    </form>
+
+    <h2>Registros</h2>
+    {% if registros %}
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Descrição</th>
+                    <th>Preço</th>
+                    <th>Categoria</th>
+                    <th>Status de Pagamento</th>
+                    <th>Mês</th>
+                    <th>Ano</th>
+                    <th>Data e Hora</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for registro in registros %}
+                    <tr>
+                        <td>{{ registro.descricao }}</td>
+                        <td>{{ registro.preco }}</td>
+                        <td>{{ registro.get_categoria_display }}</td>
+                        <td>{{ registro.get_status_pagamento_display }}</td>
+                        <td>{{ registro.mes }}</td>
+                        <td>{{ registro.ano }}</td>
+                        <td>{{ registro.data_hora }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Sem registros cadastrados.</p>
+    {% endif %}
+</body>
+</html>
