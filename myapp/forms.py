@@ -18,24 +18,25 @@ class RegistroForm(forms.ModelForm):
 
 
 class LoginForm(forms.Form):
-    primeiro_nome = forms.CharField(
-        max_length=30, 
-        label="Primeiro Nome", 
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Digite seu primeiro nome'})
-    )
-    ultimo_nome = forms.CharField(
-        max_length=30, 
-        label="Último Nome", 
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Digite seu último nome'})
+    username = forms.CharField(
+        max_length=150,
+        label="Usuário",
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Digite seu nome de usuário'})
     )
     senha = forms.CharField(
-        label="Senha", 
+        label="Senha",
         widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Digite sua senha'})
     )
 
-    class RegisterUser(forms.ModelForm):
-        password = forms.CharField(widget=forms.PasswordInput)
-        confirm_password = forms.CharField(widget=forms.PasswordInput)
+class RegisterUserForm(forms.ModelForm):
+    password = forms.CharField(
+        label="Senha",
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Digite sua senha'})
+    )
+    confirm_password = forms.CharField(
+        label="Confirme a Senha",
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirme sua senha'})
+    )
 
     class Meta:
         model = User
