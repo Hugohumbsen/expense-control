@@ -3,95 +3,103 @@
 {% block title %}Relatório de Gastos{% endblock %}
 
 {% block content %}
-    <h2>Relatório de Gastos</h2>
+<div class="container mt-4 px-4">
+    <h2 class="text-center mb-4">Relatório de Gastos</h2>
 
     <!-- Formulário para filtrar por mês e categoria -->
-    <form method="POST">
+    <form method="POST" class="d-flex justify-content-center">
         {% csrf_token %}
-        <div class="form-group">
-            <label for="mes">Mês:</label>
-            <select name="mes" id="mes" class="form-control">
-                <option value="">Selecione o Mês</option>
-                <option value="1" {% if mes_selecionado == '1' %}selected{% endif %}>Janeiro</option>
-                <option value="2" {% if mes_selecionado == '2' %}selected{% endif %}>Fevereiro</option>
-                <option value="3" {% if mes_selecionado == '3' %}selected{% endif %}>Março</option>
-                <option value="4" {% if mes_selecionado == '4' %}selected{% endif %}>Abril</option>
-                <option value="5" {% if mes_selecionado == '5' %}selected{% endif %}>Maio</option>
-                <option value="6" {% if mes_selecionado == '6' %}selected{% endif %}>Junho</option>
-                <option value="7" {% if mes_selecionado == '7' %}selected{% endif %}>Julho</option>
-                <option value="8" {% if mes_selecionado == '8' %}selected{% endif %}>Agosto</option>
-                <option value="9" {% if mes_selecionado == '9' %}selected{% endif %}>Setembro</option>
-                <option value="10" {% if mes_selecionado == '10' %}selected{% endif %}>Outubro</option>
-                <option value="11" {% if mes_selecionado == '11' %}selected{% endif %}>Novembro</option>
-                <option value="12" {% if mes_selecionado == '12' %}selected{% endif %}>Dezembro</option>
-            </select>
-        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="mes">Mês:</label>
+                <select name="mes" id="mes" class="form-control">
+                    <option value="">Selecione o Mês</option>
+                    <option value="1" {% if mes_selecionado == '1' %}selected{% endif %}>Janeiro</option>
+                    <option value="2" {% if mes_selecionado == '2' %}selected{% endif %}>Fevereiro</option>
+                    <option value="3" {% if mes_selecionado == '3' %}selected{% endif %}>Março</option>
+                    <option value="4" {% if mes_selecionado == '4' %}selected{% endif %}>Abril</option>
+                    <option value="5" {% if mes_selecionado == '5' %}selected{% endif %}>Maio</option>
+                    <option value="6" {% if mes_selecionado == '6' %}selected{% endif %}>Junho</option>
+                    <option value="7" {% if mes_selecionado == '7' %}selected{% endif %}>Julho</option>
+                    <option value="8" {% if mes_selecionado == '8' %}selected{% endif %}>Agosto</option>
+                    <option value="9" {% if mes_selecionado == '9' %}selected{% endif %}>Setembro</option>
+                    <option value="10" {% if mes_selecionado == '10' %}selected{% endif %}>Outubro</option>
+                    <option value="11" {% if mes_selecionado == '11' %}selected{% endif %}>Novembro</option>
+                    <option value="12" {% if mes_selecionado == '12' %}selected{% endif %}>Dezembro</option>
+                </select>
+            </div>
 
-        <div class="form-group">
-            <label for="categoria">Categoria:</label>
-            <select name="categoria" id="categoria" class="form-control">
-                <option value="">Selecione a Categoria</option>
-                <option value="casa" {% if categoria_selecionada == 'casa' %}selected{% endif %}>Produtos de Casa</option>
-                <option value="mercado" {% if categoria_selecionada == 'mercado' %}selected{% endif %}>Mercado</option>
-                <option value="padaria" {% if categoria_selecionada == 'padaria' %}selected{% endif %}>Padaria</option>
-                <option value="farmacia" {% if categoria_selecionada == 'farmacia' %}selected{% endif %}>Farmácia</option>
-                <option value="lazer" {% if categoria_selecionada == 'lazer' %}selected{% endif %}>Lazer</option>
-                <option value="poupanca" {% if categoria_selecionada == 'poupanca' %}selected{% endif %}>Poupança</option>
-                <option value="transporte" {% if categoria_selecionada == 'transporte' %}selected{% endif %}>Transporte</option>
-                <option value="roupa" {% if categoria_selecionada == 'roupa' %}selected{% endif %}>Roupa</option>
-            </select>
-        </div>
+            <div class="form-group">
+                <label for="categoria">Categoria:</label>
+                <select name="categoria" id="categoria" class="form-control">
+                    <option value="">Selecione a Categoria</option>
+                    <option value="casa" {% if categoria_selecionada == 'casa' %}selected{% endif %}>Produtos de Casa</option>
+                    <option value="mercado" {% if categoria_selecionada == 'mercado' %}selected{% endif %}>Mercado</option>
+                    <option value="padaria" {% if categoria_selecionada == 'padaria' %}selected{% endif %}>Padaria</option>
+                    <option value="farmacia" {% if categoria_selecionada == 'farmacia' %}selected{% endif %}>Farmácia</option>
+                    <option value="lazer" {% if categoria_selecionada == 'lazer' %}selected{% endif %}>Lazer</option>
+                    <option value="poupanca" {% if categoria_selecionada == 'poupanca' %}selected{% endif %}>Poupança</option>
+                    <option value="transporte" {% if categoria_selecionada == 'transporte' %}selected{% endif %}>Transporte</option>
+                    <option value="roupa" {% if categoria_selecionada == 'roupa' %}selected{% endif %}>Roupa</option>
+                </select>
+            </div>
 
-        <button type="submit" class="btn btn-primary">Filtrar</button>
+            <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+        </div>
     </form>
 
-    <h3 class="mt-4">Totais por Categoria</h3>
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Categoria</th>
-                <th>Total Gasto</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for total in totais_categoria %}
-                <tr>
-                    <td>{{ total.categoria }}</td>
-                    <td>R$ {{ total.total_gasto }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <h3 class="mt-4">Registros</h3>
-    {% if registros %}
+    <h3 class="text-center mt-4 mb-4">Totais por Categoria</h3>
+    <div class="table-responsive">
         <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th>Descrição</th>
-                    <th>Preço</th>
                     <th>Categoria</th>
-                    <th>Status de Pagamento</th>
-                    <th>Mês</th>
-                    <th>Ano</th>
-                    <th>Data e Hora</th>
+                    <th>Total Gasto</th>
                 </tr>
             </thead>
             <tbody>
-                {% for registro in registros %}
+                {% for total in totais_categoria %}
                     <tr>
-                        <td>{{ registro.descricao }}</td>
-                        <td>R$ {{ registro.preco }}</td>
-                        <td>{{ registro.get_categoria_display }}</td>
-                        <td>{{ registro.get_status_pagamento_display }}</td>
-                        <td>{{ registro.get_mes_nome }}</td>
-                        <td>{{ registro.ano }}</td>
-                        <td>{{ registro.data_hora }}</td>
+                        <td>{{ total.categoria }}</td>
+                        <td>R$ {{ total.total_gasto }}</td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
+    </div>
+
+    <h3 class="text-center mt-4 mb-4">Registros</h3>
+    {% if registros %}
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Descrição</th>
+                        <th>Preço</th>
+                        <th>Categoria</th>
+                        <th>Status de Pagamento</th>
+                        <th>Mês</th>
+                        <th>Ano</th>
+                        <th>Data e Hora</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for registro in registros %}
+                        <tr>
+                            <td>{{ registro.descricao }}</td>
+                            <td>R$ {{ registro.preco }}</td>
+                            <td>{{ registro.get_categoria_display }}</td>
+                            <td>{{ registro.get_status_pagamento_display }}</td>
+                            <td>{{ registro.get_mes_nome }}</td>
+                            <td>{{ registro.ano }}</td>
+                            <td>{{ registro.data_hora }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     {% else %}
-        <p>Sem registros para mostrar.</p>
+        <p class="text-center">Sem registros para mostrar.</p>
     {% endif %}
+</div>
 {% endblock %}

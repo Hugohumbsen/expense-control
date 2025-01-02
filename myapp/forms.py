@@ -13,9 +13,14 @@ class RegistroForm(forms.ModelForm):
             'categoria': forms.Select(),
             'status_pagamento': forms.Select(),
             'mes': forms.NumberInput(attrs={'placeholder': 'Digite o mês (1-12)', 'min': 1, 'max': 12}),
-            'ano': forms.NumberInput(attrs={'placeholder': 'Digite o ano'}),
+            'ano': forms.NumberInput(attrs={'placeholder': 'Digite o ano', 'min': 2025}),  # Definir o mínimo no HTML
         }
 
+    def clean_ano(self):
+        ano = self.cleaned_data.get('ano')
+        if ano < 2025:
+            raise forms.ValidationError('O ano não pode ser inferior a 2025.')
+        return ano
 
 class LoginForm(forms.Form):
     username = forms.CharField(
