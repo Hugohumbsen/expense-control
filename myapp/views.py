@@ -2,10 +2,12 @@ from tkinter import Canvas
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.views import LoginView
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Sum
 import openpyxl
-
+from django.contrib.messages import get_messages
 from myapp.models import Registro
 
 from .forms import LoginForm, RegistroForm
@@ -38,6 +40,7 @@ def login_view(request):
 
 
 # View para exibir os registros e adicionar um novo
+@login_required
 def registro_view(request):
     if request.method == "POST":
         form = RegistroForm(request.POST)
@@ -77,6 +80,10 @@ def excluir_registro(request, registro_id):
 
 def logout_view(request):
     logout(request)
+    # Limpa todas as mensagens da sessão
+    storage = get_messages(request)
+    for _ in storage:
+        pass
     return redirect('login')  # Redireciona para a tela de login após deslogar
 
 def relatorio(request):
@@ -105,7 +112,7 @@ def relatorio(request):
     return render(request, 'relatorio.html', context)
 
 def download_excel(request):
-    registro.Registro.objects.all()
+    registros = Registro.objects.all()
     wb = openpyxl.Workbook()
     sheet = wb.active
     sheet.title="Registro"
@@ -130,21 +137,17 @@ def download_excel(request):
     return response
 
 def download_pdf(request):
-    registros = Registro.objects.all()  # Pode ajustar o filtro conforme o que foi selecionado no formulário
+    registros = Registro.objects.all()  # Ajuste conforme necessário
 
-    # Preparar a resposta para download em PDF
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename=relatorio_gastos.pdf'
 
-    # Criar o PDF
-    p = Canvas.Canvas(response, pagesize=Meter)
-    width, height = Meter  # Padrão tamanho A4
+    p = canvas.Canvas(response, pagesize=A4)
+    width, height = A4
 
-    # Adicionar título
     p.setFont("Helvetica-Bold", 14)
     p.drawString(200, height - 40, "Relatório de Gastos")
 
-    # Adicionar cabeçalho
     p.setFont("Helvetica", 10)
     y_position = height - 80
     p.drawString(30, y_position, "Descrição")
@@ -155,9 +158,13 @@ def download_pdf(request):
     p.drawString(600, y_position, "Ano")
     p.drawString(700, y_position, "Data e Hora")
 
-    # Preencher com os registros
     y_position -= 20
     for registro in registros:
+        if y_position < 50:  # Adiciona nova página se necessário
+            p.showPage()
+            p.setFont("Helvetica", 10)
+            y_position = height - 40
+
         p.drawString(30, y_position, registro.descricao)
         p.drawString(200, y_position, str(registro.preco))
         p.drawString(300, y_position, registro.get_categoria_display())
@@ -167,8 +174,15 @@ def download_pdf(request):
         p.drawString(700, y_position, str(registro.data_hora))
         y_position -= 20
 
-    # Salvar o PDF
     p.showPage()
     p.save()
 
     return response
+
+
+class CustomLoginView(LoginView):
+    template_name = 'login.html'  
+
+    def dispatch(self, request, *args, **kwargs):
+        
+        return super().dispatch(request, *args, **kwargs)

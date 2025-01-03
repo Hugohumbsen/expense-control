@@ -1,6 +1,6 @@
 from django.urls import path
 from django.shortcuts import redirect
-from .views import (download_excel, download_pdf, login_view, registro_view, logout_view, relatorio, 
+from .views import (CustomLoginView, download_excel, download_pdf, login_view, registro_view, logout_view, relatorio, 
                     editar_registro, excluir_registro)  # Importa apenas o necessário
 
 urlpatterns = [
@@ -12,5 +12,6 @@ urlpatterns = [
     path('excluir/<int:registro_id>/', excluir_registro, name='excluir_registro'),
     path('download/excel/', download_excel, name='download_excel'),
     path('download/pdf/', download_pdf, name='download_pdf'),
+    path('login/', CustomLoginView.as_view(), name='login'),
     path('', lambda request: redirect('login')),  # Redireciona para 'login' quando a URL estiver vazia
 ]
