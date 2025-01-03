@@ -48,25 +48,7 @@
         </div>
     </form>
 
-    <h3 class="text-center mt-4 mb-4">Totais por Categoria</h3>
-    <div class="table-responsive">
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Categoria</th>
-                    <th>Total Gasto</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for total in totais_categoria %}
-                    <tr>
-                        <td>{{ total.categoria }}</td>
-                        <td>R$ {{ total.total_gasto }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+    
 
     <h3 class="text-center mt-4 mb-4">Registros</h3>
     {% if registros %}
@@ -98,6 +80,8 @@
                 </tbody>
             </table>
         </div>
+        <a href="{% url 'download_excel' %}?mes={{ mes_selecionado }}&categoria={{ categoria_selecionada }}" class="btn btn-success">Download Excel</a>
+  <a href="{% url 'download_pdf' %}?mes={{ mes_selecionado }}&categoria={{ categoria_selecionada }}" class="btn btn-danger">Download PDF</a>
     {% else %}
         <p class="text-center">Sem registros para mostrar.</p>
     {% endif %}

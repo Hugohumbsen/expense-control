@@ -1,4 +1,6 @@
 from tkinter import Canvas
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import A4
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import authenticate, login, logout
@@ -115,11 +117,18 @@ def download_excel(request):
     registros = Registro.objects.all()
     wb = openpyxl.Workbook()
     sheet = wb.active
-    sheet.title="Registro"
+    sheet.title = "Registro"
 
     sheet.append(["Descrição", "Preço", "Categoria", "Status de Pagamento", "Mês", "Ano", "Data e Hora"])
+
     # Preencher os dados
-    for registro in registro:
+    for registro in registros:
+        # Remover a informação de fuso horário, se presente
+        if registro.data_hora and registro.data_hora.tzinfo:
+            data_hora = registro.data_hora.replace(tzinfo=None)  # Remove o tzinfo
+        else:
+            data_hora = registro.data_hora
+
         sheet.append([
             registro.descricao,
             registro.preco,
@@ -127,7 +136,7 @@ def download_excel(request):
             registro.get_status_pagamento_display(),
             registro.get_mes_nome(),
             registro.ano,
-            registro.data_hora,
+            data_hora,  # Usando a data sem o fuso horário
         ])
 
     # Preparar a resposta para download
@@ -137,8 +146,18 @@ def download_excel(request):
     return response
 
 def download_pdf(request):
-    registros = Registro.objects.all()  # Ajuste conforme necessário
+    # Obter filtros
+    mes = request.GET.get('mes', '')
+    categoria = request.GET.get('categoria', '')
 
+    # Filtrar registros
+    registros = Registro.objects.all()
+    if mes:
+        registros = registros.filter(mes=mes)
+    if categoria:
+        registros = registros.filter(categoria=categoria)
+
+    # Criar PDF
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename=relatorio_gastos.pdf'
 
@@ -176,8 +195,8 @@ def download_pdf(request):
 
     p.showPage()
     p.save()
-
     return response
+
 
 
 class CustomLoginView(LoginView):
